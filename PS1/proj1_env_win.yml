@@ -1,0 +1,16 @@
+name: cv_proj1
+channels:
+- defaults
+- conda-forge
+dependencies:
+- python=3.6
+- numpy
+- matplotlib
+- pillow
+- scikit-image
+- opencv
+- pip
+
+
+
+

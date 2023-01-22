@@ -1,0 +1,8 @@
+required_directories:
+required_files:
+  - PS1Q2.py
+  - PS1Q3.py
+  - PS1Q4.py
+  - PS1Q5.py
+optional_directories:
+optional_files:
