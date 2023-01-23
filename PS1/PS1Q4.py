@@ -11,6 +11,9 @@ class Prob4():
         self.outdoor = None
         ###### START CODE HERE ######
         
+        self.indoor = io.imread('indoor.png')
+        self.outdoor = io.imread('outdoor.png')
+
         ###### END CODE HERE ######
 
     
@@ -19,6 +22,17 @@ class Prob4():
         
         ###### START CODE HERE ######
 
+        imgplot = plt.imshow(self.indoor[:,:,0], cmap = 'gray')
+        plt.title('Indoor Red')
+        plt.show()
+
+        imgplot = plt.imshow(self.indoor[:,:,1], cmap = 'gray')
+        plt.title('Indoor Green')
+        plt.show()
+
+        imgplot = plt.imshow(self.indoor[:,:,2], cmap = 'gray')
+        plt.title('Indoor Blue')
+        plt.show()
         
         ###### END CODE HERE ######
         return
