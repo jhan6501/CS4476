@@ -22,17 +22,17 @@ class Prob4():
         
         ###### START CODE HERE ######
 
-        imgplot = plt.imshow(self.indoor[:,:,0], cmap = 'gray')
-        plt.title('Indoor Red')
-        plt.show()
+        # imgplot = plt.imshow(self.outdoor[:,:,0], cmap = 'gray')
+        # plt.title('outdoor Red')
+        # plt.show()
 
-        imgplot = plt.imshow(self.indoor[:,:,1], cmap = 'gray')
-        plt.title('Indoor Green')
-        plt.show()
+        # imgplot = plt.imshow(self.outdoor[:,:,1], cmap = 'gray')
+        # plt.title('outdoor Green')
+        # plt.show()
 
-        imgplot = plt.imshow(self.indoor[:,:,2], cmap = 'gray')
-        plt.title('Indoor Blue')
-        plt.show()
+        # imgplot = plt.imshow(self.outdoor[:,:,2], cmap = 'gray')
+        # plt.title('outdoor Blue')
+        # plt.show()
         
         ###### END CODE HERE ######
         return
@@ -48,6 +48,45 @@ class Prob4():
         HSV = None
         ###### START CODE HERE ######
         
+        image = io.imread('inputPS1Q4.jpg')
+        print(image.shape)
+
+        x, y, z = image.shape
+        HSV = np.zeros(image.shape)
+
+        imgplot = plt.imshow(image)
+        # plt.title('outdoor Green')
+        plt.show()
+
+        for i in range (0, x):
+            for j in range (0, y):
+                rgb = image[i,j]/255
+                R,G,B = rgb
+                V = np.max(rgb)
+                m = np.min(rgb)
+                C = V - m
+                S = 0
+                if (V != 0):
+                    S = float(C)/float(V)
+
+                H_ = 0
+                if (C != 0):
+                    # print('C is', C)
+                    if (V == R):
+                        H_ = float(float(G)-B)/float(C)
+                    elif (V == G):
+                        H_ = float(float(B)-R)/float(C) + 2
+                    elif (V == B):
+                        H_ = float(float(R)-G)/float(C) + 4
+                
+                H = 0
+                if (H_ < 0):
+                    H = float(H_)/6 + 1
+                else:
+                    H = float(H_)/6
+                
+                HSV[i,j] = np.array([H,S,V])
+
         ###### END CODE HERE ######
         return HSV
 
