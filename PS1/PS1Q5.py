@@ -21,6 +21,9 @@ class Prob5():
 
         ###### START CODE HERE ######
 
+        self.cat = (io.imread('cat.bmp').astype(float)/255).astype(float)
+        self.dog = (io.imread('dog.bmp').astype(float)/255).astype(float)
+
         ###### END CODE HERE ######
 
     
@@ -95,6 +98,13 @@ class Prob5():
         convolved_image = None
         ###### START CODE HERE ######
 
+        print(image.shape)
+        print(filter.shape)
+        print(convolve(image[:,:,0], filter).shape)
+        convolved_image = np.stack((convolve(image[:,:,0], filter),convolve(image[:,:,1], filter),convolve(image[:,:,2], filter)), axis = -1)
+        # convolved_image = convolved_image
+        convolved_image = np.clip(convolved_image, 0, 1)
+        # print(convolved_image.shape)
         ###### END CODE HERE ######
         return convolved_image
 
@@ -115,6 +125,34 @@ class Prob5():
         sobel_image = None
         laplacian_image = None
         ###### START CODE HERE ######
+
+        identity_image = self.my_conv2d(self.cat, self.identity_filter)
+        # imgplot = plt.imshow(identity_image)
+        # plt.title('Identity')
+        # plt.show()
+
+
+        blur_image = self.my_conv2d(self.cat, self.blur_filter)
+        # imgplot = plt.imshow(blur_image)
+        # plt.title('Blur')
+        # plt.show()
+
+
+        sobel_image = self.my_conv2d(self.cat, self.sobel_filter)
+        # sobel_max = np.max(sobel_image)
+        # sobel_image = sobel_image/sobel_max
+        # imgplot = plt.imshow(sobel_image)
+        # plt.title('Sobel')
+        # plt.show()
+
+
+        laplacian_image = self.my_conv2d(self.cat, self.laplacian_filter)
+        # laplacian_max = np.max(laplacian_image)
+        # laplacian_image = laplacian_image/laplacian_max
+        # imgplot = plt.imshow(laplacian_image)
+        # plt.title('Laplacian')
+        # plt.show()
+
 
         ###### END CODE HERE ######
         return identity_image, blur_image, sobel_image, laplacian_image
@@ -138,6 +176,15 @@ class Prob5():
         hybrid_image = None
         ###### START CODE HERE ######
 
+        low_frequency_1 = self.my_conv2d(image1, self.gaussian_filter)
+        low_frequency_2 = self.my_conv2d(image2, self.gaussian_filter)
+
+        high_frequency_1 = image1 - low_frequency_1
+        high_frequency_2 = image2 - low_frequency_2
+
+        hybrid_image = low_frequency_1 + high_frequency_2
+        hybrid_image = np.clip(hybrid_image, 0, 1)
+
         ###### END CODE HERE ######
         return hybrid_image
 
@@ -158,6 +205,17 @@ class Prob5():
         hybrid_image = None
         hybrid_image_vis = None 
         ###### START CODE HERE ######
+
+        hybrid_image = self.create_hybrid_image(self.dog, self.cat)
+        hybrid_image_vis = self.vis_image_scales_numpy(hybrid_image)
+
+        imgplot = plt.imshow(hybrid_image)
+        plt.title('Hybrid Image')
+        plt.show()
+
+        imgplot = plt.imshow(hybrid_image_vis)
+        plt.title('Hybrid Vis')
+        plt.show()
 
         ###### END CODE HERE ######
         return hybrid_image, hybrid_image_vis
