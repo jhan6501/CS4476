@@ -277,8 +277,9 @@ def non_max_suppression(R, neighborhood_size = 7):
     # TODO: YOUR NON MAX SUPPRESSION CODE HERE                                  #
     #############################################################################
     median = np.median(R)
+    R[R < median] = 0 
     R_local_pts = maximum_filter(R, neighborhood_size)
-    R_local_pts[R_local_pts < median] = 0 
+    # R_local_pts[R_local_pts < median] = 0 
 
     #############################################################################
     #                             END OF YOUR CODE                              #
@@ -333,6 +334,10 @@ def get_interest_points(image, n_pts = 1500):
     sx, sy, sxsy = second_moments(ix, iy)
     R = corner_response(sx, sy, sxsy, 0.05)
     print('R shape', R.shape)
+    min_R = np.min(R)
+    max_R = np.max(R)
+    R = (R - min_R)/(max_R - min_R)
+
     R_local_pts = non_max_suppression(R)
     print('R_local_pts shape', R_local_pts.shape)
 
