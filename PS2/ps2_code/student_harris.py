@@ -276,9 +276,8 @@ def non_max_suppression(R, neighborhood_size = 7):
     #############################################################################
     # TODO: YOUR NON MAX SUPPRESSION CODE HERE                                  #
     #############################################################################
-    median = np.median
-    R_local_pts = scipy.ndimage.filters.maximum_filter(R, neighborhood_size)
-# x[x < 0] = 0
+    median = np.median(R)
+    R_local_pts = maximum_filter(R, neighborhood_size)
     R_local_pts[R_local_pts < median] = 0 
 
     #############################################################################
@@ -330,8 +329,24 @@ def get_interest_points(image, n_pts = 1500):
     # TODO: YOUR HARRIS CORNER DETECTOR CODE HERE                               #
     #############################################################################
 
-    raise NotImplementedError('`get_interest_points` function in ' +
-    '`student_harris.py` needs to be implemented')
+    ix, iy = get_gradients(image)
+    sx, sy, sxsy = second_moments(ix, iy)
+    R = corner_response(sx, sy, sxsy, 0.05)
+    print('R shape', R.shape)
+    R_local_pts = non_max_suppression(R)
+    print('R_local_pts shape', R_local_pts.shape)
+
+
+    a_1d = R_local_pts.flatten()
+
+    # Find the indices in the 1D array
+    idx_1d = a_1d.argsort()[-n_pts:]
+
+    # convert the idx_1d back into indices arrays for each dimension
+    x_idx, y_idx = np.unravel_index(idx_1d, R_local_pts.shape)
+
+    x = x_idx
+    y = y_idx
 
     #############################################################################
     #                             END OF YOUR CODE                              #
