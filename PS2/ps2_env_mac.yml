@@ -1,0 +1,17 @@
+name: ps2
+channels:
+- defaults
+- conda-forge
+dependencies:
+- jupyter
+- matplotlib
+- python=3.9
+- scikit-learn
+- scipy
+- opencv
+- vlfeat
+- pip
+- pip:
+  - visdom
+  - pyyaml
+- yaml

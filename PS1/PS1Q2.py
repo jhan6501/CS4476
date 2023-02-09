@@ -14,11 +14,12 @@ class Prob2():
         ###### START CODE HERE ######
         print(self.A)
         print(self.A.shape)
-        sort = np.sort(self.A)
+        sort = np.sort(self.A.flatten())[::-1][None,:]
         print(sort)
         print(sort.shape)
-        plt.imshow(sort, cmap='gray', aspect='auto')
-        # plt.show()
+        # plt.plot(sort)
+        plt.imshow(sort, cmap='gray', aspect=10000)
+        plt.show()
         ###### END CODE HERE ######
         return
     
@@ -27,9 +28,9 @@ class Prob2():
         ###### START CODE HERE ######
         print(np.min(self.A))
         print(np.max(self.A))
-        bins = np.arange(0, 1.01, 0.05)
-        plt.hist(self.A, bins)
-        print(bins)
+        as_list = np.sort(self.A).flatten()
+        plt.hist(as_list, density=True, bins=20)  # density=False would make counts
+
         # plt.show()
         ###### END CODE HERE ######
         return

@@ -22,17 +22,18 @@ class Prob4():
         
         ###### START CODE HERE ######
 
-        # imgplot = plt.imshow(self.outdoor[:,:,0], cmap = 'gray')
-        # plt.title('outdoor Red')
-        # plt.show()
+        indoor = cv2.cvtColor(self.indoor, cv2.COLOR_RGB2LAB)
+        imgplot = plt.imshow(indoor[:,:,0], cmap = 'gray')
+        plt.title('indoor Red')
+        plt.show()
 
-        # imgplot = plt.imshow(self.outdoor[:,:,1], cmap = 'gray')
-        # plt.title('outdoor Green')
-        # plt.show()
+        imgplot = plt.imshow(indoor[:,:,1], cmap = 'gray')
+        plt.title('indoor Green')
+        plt.show()
 
-        # imgplot = plt.imshow(self.outdoor[:,:,2], cmap = 'gray')
-        # plt.title('outdoor Blue')
-        # plt.show()
+        imgplot = plt.imshow(indoor[:,:,2], cmap = 'gray')
+        plt.title('indoor Blue')
+        plt.show()
         
         ###### END CODE HERE ######
         return
