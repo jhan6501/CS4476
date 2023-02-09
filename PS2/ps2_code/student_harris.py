@@ -28,8 +28,10 @@ def get_gaussian_kernel(ksize, sigma):
     # TODO: YOUR GAUSSIAN KERNEL CODE HERE                                      #
     #############################################################################
 
-    raise NotImplementedError('`get_gaussian_kernel` function in ' +
-    '`student_harris.py` needs to be implemented')
+    kernel = cv2.getGaussianKernel(ksize, sigma)
+    kernel = kernel * kernel.T
+    total = np.sum(kernel)  
+    kernel = kernel/total
 
     #############################################################################
     #                             END OF YOUR CODE                              #
@@ -61,8 +63,29 @@ def my_filter2D(image, filter, bias = 0):
     # TODO: YOUR MY FILTER 2D CODE HERE                                         #
     #############################################################################
 
-    raise NotImplementedError('`my_filter2D` function in ' +
-    '`student_harris.py` needs to be implemented')
+    x_buffer = np.shape(filter)[0] // 2
+    y_buffer = np.shape(filter)[1] // 2
+    image_border = cv2.copyMakeBorder(
+                 image, 
+                 x_buffer, 
+                 x_buffer, 
+                 y_buffer, 
+                 y_buffer, 
+                 cv2.BORDER_CONSTANT, 
+                 0
+              )
+
+    conv_image = np.zeros(np.shape(image))
+    a,b = np.shape(filter)
+    x,y = np.shape(image)
+
+    # for c in range (0, z):
+    for row in range (0, x):
+        for col in range (0, y):
+            value = 0
+            value = np.sum(filter * image_border[row:row+(2*x_buffer) + 1, col:col+(2*y_buffer) + 1])
+            conv_image[row, col] = value
+
 
     #############################################################################
     #                             END OF YOUR CODE                              #
@@ -89,8 +112,11 @@ def get_gradients(image):
     # TODO: YOUR IMAGE GRADIENTS CODE HERE                                      #
     #############################################################################
 
-    raise NotImplementedError('`get_gradients` function in ' +
-    '`student_harris.py` needs to be implemented')
+    sobel_filter_x = np.asarray([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    sobel_filter_y = np.asarray([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
+
+    ix = my_filter2D(image, sobel_filter_x)
+    iy = my_filter2D(image, sobel_filter_y)
 
     #############################################################################
     #                             END OF YOUR CODE                              #
@@ -126,8 +152,35 @@ def remove_border_vals(image, x, y, c, window_size = 16):
     # TODO: YOUR REMOVE BORDER VALS CODE HERE                                   #
     #############################################################################
 
-    raise NotImplementedError('`remove_border_vals` function in ' +
-    '`student_harris.py` needs to be implemented')
+    total = np.shape(x)
+    m,n,c = np.shape(image)
+
+    indices_to_remove = []
+    for i in range (total-1, -1, -1):
+        cx = x[i]
+        cy = y[i]
+
+        xmax = cx + np.ceil(window_size/2)
+        ymax = cy + np.ceil(window_size/2)
+        xmin = cx - np.floor(window_size/2)
+        ymin = cy - np.floor(window_size/2) 
+
+        remove = False
+        if xmax >= m:
+            remove = True
+        if ymax >= n:
+            remove = True
+        if xmin < 0:
+            remove = True
+        if ymin < 0:
+            remove = True
+
+        if remove:
+            indices_to_remove.append(i)
+
+    x = np.delete(x, indices_to_remove)
+    y = np.delete(y, indices_to_remove)
+    c = np.delete(c, indices_to_remove)
         
     #############################################################################
     #                             END OF YOUR CODE                              #
@@ -157,9 +210,9 @@ def second_moments(ix, iy, ksize = 7, sigma = 10):
     # TODO: YOUR SECOND MOMENTS CODE HERE                                       #
     #############################################################################
 
-    raise NotImplementedError('`second_moments` function in ' +
-    '`student_harris.py` needs to be implemented')
-    
+    sx2 = my_filter2D(ix * ix, get_gaussian_kernel(ksize, sigma))
+    sy2 = my_filter2D(iy * iy, get_gaussian_kernel(ksize, sigma))
+    sxsy = my_filter2D(ix * iy, get_gaussian_kernel(ksize, sigma))
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################
@@ -190,8 +243,11 @@ def corner_response(sx2, sy2, sxsy, alpha):
     # TODO: YOUR CORNER RESPONSE CODE HERE                                       #
     #############################################################################
 
-    raise NotImplementedError('`corner_response` function in ' +
-    '`student_harris.py` needs to be implemented')
+    M = np.array([[sx2, sxsy],[sxsy, sy2]])
+    det = sx2 * sy2 - sxsy * sxsy
+    trace = np.trace(M)
+
+    R = det - alpha * trace * trace
 
     #############################################################################
     #                             END OF YOUR CODE                              #
@@ -220,9 +276,10 @@ def non_max_suppression(R, neighborhood_size = 7):
     #############################################################################
     # TODO: YOUR NON MAX SUPPRESSION CODE HERE                                  #
     #############################################################################
-
-    raise NotImplementedError('`non_max_suppression` function in ' +
-    '`student_harris.py` needs to be implemented')
+    median = np.median
+    R_local_pts = scipy.ndimage.filters.maximum_filter(R, neighborhood_size)
+# x[x < 0] = 0
+    R_local_pts[R_local_pts < median] = 0 
 
     #############################################################################
     #                             END OF YOUR CODE                              #

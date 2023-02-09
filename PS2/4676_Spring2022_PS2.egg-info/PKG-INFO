@@ -1,0 +1,33 @@
+Metadata-Version: 2.1
+Name: 4676-Spring2022-PS2
+Version: 1.0.0
+Summary: UNKNOWN
+Home-page: https://faculty.cc.gatech.edu/~judy/cs4476-sp22/
+Author: Georgia Institute of Technology
+Author-email: tyang354@gatech.edu
+License: MIT
+Keywords: computer-vision
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: MacOS
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >= 3.5
+
+# CS 4476 PS 2: [Local Feature Matching](https://faculty.cc.gatech.edu/~judy/cs4476-sp23/)
+
+
+# Setup 
+- Note: Refer to `PS2.pdf` for complete instructions.
+- Install <a href="https://conda.io/miniconda.html">Miniconda</a> (pyhon 3.6).
+- Create a conda environment, using the appropriate command. On Windows, open the installed "Conda prompt" to run this command. On MacOS and Linux, you can just use a terminal window to run the command. Modify the command based on your OS ('linux', 'mac', or 'win'): `conda env create -f ps2_env_<OS>.yml`
+- This should create an environment named `ps2`. Activate it using the following Windows command: `activate ps2` or the following MacOS / Linux command: `conda activate ps2`.
+- Run `pip install - e .`
+- Run the notebook using: `jupyter notebook ./ps2_code/ps2.ipynb`
+- Generate the submission once you're finished using `python zip_submission.py --gt_username <your_username>`
+
+
+
