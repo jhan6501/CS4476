@@ -20,10 +20,18 @@ def compute_feature_distances(features1, features2):
     ###########################################################################
     # TODO: YOUR CODE HERE                                                    #
     ###########################################################################
-
-    raise NotImplementedError('`compute_feature_distances` function in ' +
-        '`student_feature_matching.py` needs to be implemented')
     
+    n = features1.shape[0]
+    m = features2.shape[0]
+
+    dists = np.zeros((n, m))
+
+    for i in range(0, n):
+        for j in range(0, m):
+            feature1 = features1[i]
+            feature2 = features2[j]
+            dists[i][j] = np.linalg.norm(feature1 - feature2)
+
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################

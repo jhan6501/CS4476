@@ -22,11 +22,11 @@ def get_magnitudes_and_orientations(dx, dy):
     orientations = []#placeholder
 
     #############################################################################
-    # TODO: YOUR CODE HERE                                                      #                                          #
+    # TODO: YOUR CODE HERE                                                      #
     #############################################################################
 
-    raise NotImplementedError('`get_magnitudes_and_orientations` function in ' +
-        '`student_sift.py` needs to be implemented')
+    magnitudes = (dx**2 + dy**2)**(1/2)
+    orientations = np.arctan2(dy, dx)
 
     #############################################################################
     #                             END OF YOUR CODE                              #
@@ -88,14 +88,33 @@ def get_feat_vec(x,y,magnitudes, orientations,feature_width):
 
     """
 
-    fv = []#placeholder
+    fv = np.zeros(128)
     #############################################################################
-    # TODO: YOUR CODE HERE                                                      #                                          #
+    # TODO: YOUR CODE HERE                                                      #
     #############################################################################
+    
+    x = int(x)
+    y = int(y)
 
-    raise NotImplementedError('`get_feat_vec` function in ' +
-        '`student_sift.py` needs to be implemented')
+    length_size = feature_width // 2
+    quadrant_size = feature_width // 4
 
+    orientation_window = orientations[y - length_size: y + length_size, x - length_size: x + length_size]
+    magnitude_window = magnitudes[y - length_size: y + length_size, x - length_size: x + length_size]
+
+    for i in range(0, quadrant_size):
+        for j in range(0, quadrant_size):
+            orientation_quadrant = orientation_window[i * quadrant_size: (i + 1) * quadrant_size, j * quadrant_size: (j + 1) * quadrant_size]
+            magnitude_quadrant = magnitude_window[i * quadrant_size: (i + 1) * quadrant_size, j * quadrant_size: (j + 1) * quadrant_size]
+            
+            values, edges = np.histogram(orientation_quadrant, 8, range=(-np.pi, np.pi), weights=magnitude_quadrant)
+            index = i * 32 + j * 8
+
+            for increment in range (0, 8):
+                fv[index + increment] = values[increment]
+
+    fv = fv/np.linalg.norm(fv)
+    fv = fv ** .9
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################
@@ -132,10 +151,21 @@ def get_features(image, x, y, feature_width):
     #############################################################################
     # TODO: YOUR CODE HERE                                                      #                                          #
     #############################################################################
+    
+    k = np.shape(x)[0]
+    fvs = np.zeros((k, 128))
 
-    raise NotImplementedError('`get_features` function in ' +
-        '`student_sift.py` needs to be implemented')
-        
+    dx, dy = get_gradients(image)
+    magnitude, orientation = get_magnitudes_and_orientations(dx, dy)
+
+    for i in range (0, k):
+        x_val = x[i]
+        y_val = y[i]
+
+        feature_vector = get_feat_vec(x_val, y_val, magnitude, orientation, feature_width)
+
+        fvs[i] = feature_vector
+
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################

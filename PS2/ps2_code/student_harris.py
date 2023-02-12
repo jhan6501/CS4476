@@ -151,9 +151,17 @@ def remove_border_vals(image, x, y, c, window_size = 16):
     #############################################################################
     # TODO: YOUR REMOVE BORDER VALS CODE HERE                                   #
     #############################################################################
-
-    total = np.shape(x)
-    m,n,c = np.shape(image)
+    print('x is', x.shape)
+    print('y is', y.shape)
+    print('c is', c.shape)
+    total = np.shape(x)[0]
+    shape = np.shape(image)
+    c_length = 1
+    m, n = 0, 0
+    if (len(shape) == 3):
+        m,n,c_length = shape
+    else:
+        m,n = shape
 
     indices_to_remove = []
     for i in range (total-1, -1, -1):
@@ -219,7 +227,7 @@ def second_moments(ix, iy, ksize = 7, sigma = 10):
 
     return sx2, sy2, sxsy
 
-def corner_response(sx2, sy2, sxsy, alpha):
+def corner_response(sx2, sy2, sxsy, alpha=0.05):
 
     """
     Given second moments function below, calculate corner resposne.
@@ -276,10 +284,10 @@ def non_max_suppression(R, neighborhood_size = 7):
     #############################################################################
     # TODO: YOUR NON MAX SUPPRESSION CODE HERE                                  #
     #############################################################################
+    
     median = np.median(R)
     R[R < median] = 0 
     R_local_pts = maximum_filter(R, neighborhood_size)
-    # R_local_pts[R_local_pts < median] = 0 
 
     #############################################################################
     #                             END OF YOUR CODE                              #
@@ -332,26 +340,16 @@ def get_interest_points(image, n_pts = 1500):
 
     ix, iy = get_gradients(image)
     sx, sy, sxsy = second_moments(ix, iy)
-    R = corner_response(sx, sy, sxsy, 0.05)
-    print('R shape', R.shape)
-    min_R = np.min(R)
-    max_R = np.max(R)
-    R = (R - min_R)/(max_R - min_R)
-
+    R = corner_response(sx, sy, sxsy, alpha = 0.05)
     R_local_pts = non_max_suppression(R)
-    print('R_local_pts shape', R_local_pts.shape)
 
+    matchingIndices = np.logical_and(R_local_pts == R, R_local_pts > 0)
+    y, x = np.where(matchingIndices != 0)
 
-    a_1d = R_local_pts.flatten()
-
-    # Find the indices in the 1D array
-    idx_1d = a_1d.argsort()[-n_pts:]
-
-    # convert the idx_1d back into indices arrays for each dimension
-    x_idx, y_idx = np.unravel_index(idx_1d, R_local_pts.shape)
-
-    x = x_idx
-    y = y_idx
+    x, y, confidences = remove_border_vals(image, x, y, R_local_pts[matchingIndices])
+    sortIndices = np.argsort(confidences)[::-1]
+    x = x[sortIndices][:n_pts]
+    y = y[sortIndices][:n_pts]
 
     #############################################################################
     #                             END OF YOUR CODE                              #
