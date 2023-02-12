@@ -124,7 +124,6 @@ def get_gradients(image):
     
     return ix, iy
 
-
 def remove_border_vals(image, x, y, c, window_size = 16):
     """
     Remove interest points that are too close to a border to allow SIFTfeature
@@ -151,49 +150,89 @@ def remove_border_vals(image, x, y, c, window_size = 16):
     #############################################################################
     # TODO: YOUR REMOVE BORDER VALS CODE HERE                                   #
     #############################################################################
-    print('x is', x.shape)
-    print('y is', y.shape)
-    print('c is', c.shape)
-    total = np.shape(x)[0]
-    shape = np.shape(image)
-    c_length = 1
-    m, n = 0, 0
-    if (len(shape) == 3):
-        m,n,c_length = shape
-    else:
-        m,n = shape
 
-    indices_to_remove = []
-    for i in range (total-1, -1, -1):
-        cx = x[i]
-        cy = y[i]
+    fitsHorz = np.logical_and(x >= window_size // 2, x <= image.shape[1] - (window_size // 2))
+    fitsVert = np.logical_and(y >= window_size // 2, y <= image.shape[0] - (window_size // 2))
+    keepIndices = np.logical_and(fitsHorz, fitsVert)
+    x = x[keepIndices]
+    y = y[keepIndices]
+    c = c[keepIndices]
 
-        xmax = cx + np.ceil(window_size/2)
-        ymax = cy + np.ceil(window_size/2)
-        xmin = cx - np.floor(window_size/2)
-        ymin = cy - np.floor(window_size/2) 
-
-        remove = False
-        if xmax >= m:
-            remove = True
-        if ymax >= n:
-            remove = True
-        if xmin < 0:
-            remove = True
-        if ymin < 0:
-            remove = True
-
-        if remove:
-            indices_to_remove.append(i)
-
-    x = np.delete(x, indices_to_remove)
-    y = np.delete(y, indices_to_remove)
-    c = np.delete(c, indices_to_remove)
         
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################
     return x, y, c
+
+# def remove_border_vals(image, x, y, c, window_size = 16):
+#     """
+#     Remove interest points that are too close to a border to allow SIFTfeature
+#     extraction. Make sure you remove all points where a window around
+#     that point cannot be formed.
+
+#     Args:
+#     -   image: image: A numpy array of shape (m,n,c),
+#         image may be grayscale of color (your choice)
+#     -   x: numpy array of shape (N,)
+#     -   y: numpy array of shape (N,)
+#     -   c: numpy array of shape (N,)
+#     -   window_size: int of the window size that we want to remove. (i.e. make sure all
+#         points in a window_size by window_size area can be formed around a point)
+#         Set this to 16 for unit testing. Treat the center point of this window as the bottom right
+#         of the center-most 4 pixels. This will be the same window used for SIFT.
+
+#     Returns:
+#     -   x: A numpy array of shape (N-#removed vals,) containing x-coordinates of interest points
+#     -   y: A numpy array of shape (N-#removed vals,) containing y-coordinates of interest points
+#     -   c (optional): numpy nd-array of dim (N-#removed vals,) containing the strength
+#     """
+
+#     #############################################################################
+#     # TODO: YOUR REMOVE BORDER VALS CODE HERE                                   #
+#     #############################################################################
+#     print('x is', x.shape)
+#     print('y is', y.shape)
+#     print('c is', c.shape)
+#     total = np.shape(x)[0]
+#     shape = np.shape(image)
+#     c_length = 1
+#     m, n = 0, 0
+#     if (len(shape) == 3):
+#         m,n,c_length = shape
+#     else:
+#         m,n = shape
+
+#     indices_to_remove = []
+#     for i in range (total-1, -1, -1):
+#         cx = x[i]
+#         cy = y[i]
+
+#         xmax = cx + np.ceil(window_size/2)
+#         ymax = cy + np.ceil(window_size/2)
+#         xmin = cx - np.floor(window_size/2)
+#         ymin = cy - np.floor(window_size/2) 
+
+#         remove = False
+#         if xmax >= m:
+#             remove = True
+#         if ymax >= n:
+#             remove = True
+#         if xmin < 0:
+#             remove = True
+#         if ymin < 0:
+#             remove = True
+
+#         if remove:
+#             indices_to_remove.append(i)
+
+#     x = np.delete(x, indices_to_remove)
+#     y = np.delete(y, indices_to_remove)
+#     c = np.delete(c, indices_to_remove)
+        
+#     #############################################################################
+#     #                             END OF YOUR CODE                              #
+#     #############################################################################
+#     return x, y, c
 
 def second_moments(ix, iy, ksize = 7, sigma = 10):
     """

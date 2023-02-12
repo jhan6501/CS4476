@@ -80,9 +80,26 @@ def match_features(features1, features2):
     # TODO: YOUR CODE HERE                                                    #
     ###########################################################################
 
-    raise NotImplementedError('`match_features` function in ' +
-        '`student_feature_matching.py` needs to be implemented')
+    distances = compute_feature_distances(features1, features2)
+    matches = []
+
+    for i, d in enumerate(distances):
+        f1 = features1[i]
+        sorted_distance = sorted(enumerate(d), key=lambda t: t[1])
+
+        ratio = sorted_distance[0][1]/ sorted_distance[1][1]
+        confidence = 1 / ratio
+
+        best_index = sorted_distance[0][0]
+        matches.append((i, best_index, confidence))
+
+
+    sorted_matches = sorted(matches, key=lambda t: -t[2]) # sort them by the highest confidence
+    matches = [[f1, f2] for f1, f2, _ in sorted_matches]
+    confidences = [c for _, _, c in sorted_matches]
     
+    matches = np.array(matches)
+    confidences = np.array(confidences)
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################
