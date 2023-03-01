@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: 4476-Spring22-HW3
+Version: 1.0.0
+Summary: UNKNOWN
+Home-page: https://faculty.cc.gatech.edu/~judy/cs4476-sp22/
+Author: Georgia Institute of Technology
+Author-email: ssrikanth39@gatech.edu
+License: MIT
+Keywords: computer-vision
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: MacOS
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >= 3.5
+
+# PS3
+Projection Matrix and Fundamental Matrix Estimation
+
+
