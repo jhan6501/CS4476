@@ -64,12 +64,6 @@ def find_inliers(x_0s: np.ndarray,
 
     ##############################
     # TODO: Student code goes here
-
-    if x_0s.shape[1] == 2:
-        x_0s = np.append(x_0s, np.ones((x_0s.shape[0], 1)), 1)
-    if x_1s.shape[1] == 2:
-        x_1s = np.append(x_1s, np.ones((x_1s.shape[0], 1)), 1)
-
     inliers = []
 
     errors = fundamental_matrix.signed_point_line_errors(x_0s, F, x_1s)
@@ -150,6 +144,8 @@ def ransac_fundamental_matrix(x_0s: int,
     threshold = 1.0
     num_iterations = calculate_num_ransac_iterations(P, k, p)
 
+    x_0s_preprocessed, x_1s_preprocessed = two_view_data.preprocess_data(x_0s, x_1s)
+
     for i in range(num_iterations):
         # randomly select points
         indices = np.random.choice(len(x_1s), k)
@@ -158,7 +154,7 @@ def ransac_fundamental_matrix(x_0s: int,
 
         # solve for Fundamental matrix
         F = solve_F(random_x_0s, random_x_1s)
-        inliers = find_inliers(x_0s, F, x_1s, threshold) # find the inliers for the fundamental matrix
+        inliers = find_inliers(x_0s_preprocessed, F, x_1s_preprocessed, threshold)
         if(len(inliers) > len(inliers_x_0)):
             # if better fundamental matrix, then update everything
             best_F = F
