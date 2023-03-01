@@ -73,11 +73,12 @@ def find_inliers(x_0s: np.ndarray,
     inliers = []
 
     errors = fundamental_matrix.signed_point_line_errors(x_0s, F, x_1s)
-    for i in range(0, len(errors), 2):
-        error_x = errors[i]
-        error_y = errors[i+1]
+    
+    for i in range(0, len(errors)//2):
+        error_x = errors[2*i]
+        error_y = errors[2*i+1]
         if(abs(error_x) <= threshold and abs(error_y) <= threshold):
-            inliers.append(i//2)
+            inliers.append(i)
 
     inliers = np.array(inliers)
     ##############################
@@ -140,8 +141,8 @@ def ransac_fundamental_matrix(x_0s: int,
     ##############################
     # TODO: Student code goes here
 
-    inliears_x_0 = []
-    inliears_x_1 = []
+    inliers_x_0 = []
+    inliers_x_1 = []
 
     P = 0.999
     k = 9
@@ -149,7 +150,7 @@ def ransac_fundamental_matrix(x_0s: int,
     threshold = 1.0
     num_iterations = calculate_num_ransac_iterations(P, k, p)
 
-    for _ in range(num_iterations):
+    for i in range(num_iterations):
         # randomly select points
         indices = np.random.choice(len(x_1s), k)
         random_x_0s = x_0s[indices]
@@ -158,11 +159,11 @@ def ransac_fundamental_matrix(x_0s: int,
         # solve for Fundamental matrix
         F = solve_F(random_x_0s, random_x_1s)
         inliers = find_inliers(x_0s, F, x_1s, threshold) # find the inliers for the fundamental matrix
-        if(len(inliers) > len(inliears_x_0)):
+        if(len(inliers) > len(inliers_x_0)):
             # if better fundamental matrix, then update everything
             best_F = F
-            inliears_x_0 = x_0s[inliers]
-            inliears_x_1 = x_1s[inliers]
+            inliers_x_0 = x_0s[inliers]
+            inliers_x_1 = x_1s[inliers]
 
     ##############################
 

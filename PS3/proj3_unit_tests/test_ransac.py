@@ -54,7 +54,7 @@ def test_ransac_fundamental_matrix_error():
     error_tolerance = 0.5
 
     F, inliers_x_0, inliers_x_1 = ransac_fundamental_matrix(points_a, points_b)
-
+    
     x_0s, x_1s = two_view_data.preprocess_data(inliers_x_0, inliers_x_1)
     res = fundamental_matrix.signed_point_line_errors(x_0s, F, x_1s)
     res = np.abs(res)
