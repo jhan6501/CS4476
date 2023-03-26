@@ -1,0 +1,15 @@
+README.md
+setup.py
+4476_Spring23_HW4.egg-info/PKG-INFO
+4476_Spring23_HW4.egg-info/SOURCES.txt
+4476_Spring23_HW4.egg-info/dependency_links.txt
+4476_Spring23_HW4.egg-info/requires.txt
+4476_Spring23_HW4.egg-info/top_level.txt
+proj4_code/__init__.py
+proj4_code/student_code.py
+proj4_code/utils.py
+proj4_code/feature_matching/SIFTNet.py
+proj4_code/feature_matching/__init__.py
+proj4_code/feature_matching/torch_layer_utils.py
+proj4_unit_tests/__init__.py
+proj4_unit_tests/test_student_code.py

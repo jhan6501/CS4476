@@ -1,0 +1,20 @@
+name: cs4476_proj4
+channels:
+- pytorch
+- conda-forge
+- sepandhaghighi
+dependencies:
+- jupyter
+- matplotlib
+- pip
+- pytest
+- python=3.10
+- cpuonly
+- pytorch=1.13.1
+- torchvision
+- pyyaml
+- scipy
+- opencv
+- pycm=3.8
+- pytest
+- bs4
