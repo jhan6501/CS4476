@@ -38,7 +38,12 @@ def pairwise_distances(X, Y):
     D = None
 
     #############################################################################
-    # TODO: YOUR CODE HERE
+    D = np.zeros([N, M])
+    for n in range (0, N):
+        for m in range (0, M):
+            dist = np.linalg.norm(X[n]-Y[m])
+            D[n,m] = dist
+    
     #############################################################################
 
     #############################################################################
@@ -90,6 +95,17 @@ def nearest_neighbor_classify(train_image_feats,
     # TODO: YOUR CODE HERE
     #############################################################################
 
+    distances = pairwise_distances(test_image_feats, train_image_feats)
+
+    M, d = test_image_feats.shape
+    for m in range(M):
+        current_distances = distances[m]
+        sorted_distances = np.argsort(current_distances)
+
+        voted_labels = [train_labels[i] for i in sorted_distances[:k]]
+        predicted_label = max(set(voted_labels), key=voted_labels.count)
+        pred_labels.append(predicted_label)
+    
     #############################################################################
     #                             END OF YOUR CODE
     #############################################################################
@@ -134,7 +150,20 @@ def kmeans(feature_vectors, k, max_iter=100):
     np.random.seed(42)
     #############################################################################
     # TODO: YOUR CODE HERE
-    #############################################################################
+    #############################################################################\
+
+    N, d = feature_vectors.shape
+    centroids = feature_vectors[np.random.choice(np.arange(N), size=k, replace=False)]
+    for i in range(max_iter):
+        distances = pairwise_distances(feature_vectors, centroids)
+        closest_center = np.argmin(distances, axis=1)
+        
+        for j in range(k):
+            close_vectors = feature_vectors[np.where(closest_center == j)]
+            if (len(close_vectors) > 0):
+                centroids[j] = np.mean(close_vectors, axis=0)
+
+    return centroids
 
     #############################################################################
     #                             END OF YOUR CODE
@@ -193,6 +222,19 @@ def build_vocabulary(image_arrays, vocab_size=50, stride=20, max_iter=10):
     # TODO: YOUR CODE HERE
     #############################################################################
 
+    feature_vectors = []
+
+    for img in image_arrays:
+        height, width = img.shape
+        x, y = generate_sample_points(height, width, stride)
+        features = get_siftnet_features(torch.from_numpy(img).view(1, 1, height, width).type(torch.float32), x, y)
+        for feature_vector in features:
+            feature_vectors.append(feature_vector)
+
+    feature_vectors = np.array(feature_vectors)
+
+    vocab = kmeans(feature_vectors, k = vocab_size, max_iter=max_iter)
+
     #############################################################################
     #                             END OF YOUR CODE
     #############################################################################
@@ -228,7 +270,8 @@ def kmeans_quantize(raw_data_pts, centroids):
     #############################################################################
     # TODO: YOUR CODE HERE
     #############################################################################
-
+    distances = pairwise_distances(raw_data_pts, centroids)
+    indices = np.argmin(distances, axis=1)
     #############################################################################
     #                             END OF YOUR CODE
     #############################################################################
@@ -285,6 +328,18 @@ def get_bags_of_sifts(image_arrays, vocabulary, stride=5):
     #############################################################################
     # TODO: YOUR CODE HERE
     #############################################################################
+
+    for i in range(num_images):
+        img = image_arrays[i]
+        height, width = img.shape
+        x, y = generate_sample_points(height, width, stride)
+        features = get_siftnet_features(torch.from_numpy(img).view(1, 1, height, width).type(torch.float32), x, y)
+        closest_center = kmeans_quantize(features, vocab)
+        
+        histogram, _ = np.histogram(closest_center, bins=np.arange(vocab_size + 1))
+        histogram = histogram.astype(float)
+        histogram /= np.linalg.norm(histogram)
+        feats[i] = histogram
 
     #############################################################################
     #                             END OF YOUR CODE
